@@ -1,5 +1,6 @@
 package com.example.dharmendraverma.myapplication;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
@@ -8,9 +9,20 @@ import android.opengl.GLSurfaceView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.RelativeLayout;
+
+import com.example.dharmendraverma.myapplication.gpuimage.GPUBeautificationFilter;
+import com.example.dharmendraverma.myapplication.gpuimage.GPUImageCarouselGroup;
+import com.example.dharmendraverma.myapplication.gpuimage.GPUImageCarouselOnTouchListener;
+import com.example.dharmendraverma.myapplication.gpuimage.GPUImageFilter;
+import com.example.dharmendraverma.myapplication.gpuimage.IFBrannanFilterOptimized;
+import com.example.dharmendraverma.myapplication.gpuimage.IFFadeOut;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
     String mVideoFilepath = null;
     GLSurfaceView mGLSurfaceView;
     private VideoRender mRenderer;
+    private VideoFilter mVideoFilter;
+    RelativeLayout relativeLayout;
 /*    private MediaPlayer mMediaPlayer = null;*/
 
     @Override
@@ -31,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         mResources = getResources();
         /*mMediaPlayer = new MediaPlayer();*/
         mVideoFilepath = "android.resource://" + getPackageName() + "/" + R.raw.video;
+        relativeLayout =(RelativeLayout)findViewById(R.id.root) ;
         /*mMediaPlayer = new MediaPlayer();*/
       /*  try {
             mMediaPlayer.setDataSource(this,Uri.parse(mVideoFilepath));
@@ -39,11 +54,21 @@ public class MainActivity extends AppCompatActivity {
             Log.e(TAG, e.getMessage(), e);
         }*/
        // mMediaPlayer.prepareAsync();
-        mRenderer = new VideoRender(R.raw.video,this);
+        mVideoFilter = new VideoFilter(1280,720);
+        mVideoFilter.setContext(this);
+        mVideoFilter.init();
+        mRenderer = new VideoRender(R.raw.video,mVideoFilter,this);
         mGLSurfaceView = (GLSurfaceView)findViewById(R.id.glsurfaceview);
         mGLSurfaceView.setEGLContextClientVersion(2);
         mGLSurfaceView.setRenderer(mRenderer);
-        mGLSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+        mGLSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
+        relativeLayout.setOnTouchListener(new GPUImageCarouselOnTouchListener(this) {
+            @Override
+            public void onTouchMoved(float newPos, int status) {
+                mVideoFilter.onTouchMoved(newPos, status);
+            }
+        });
+       // mGLSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
       //  mVideoView = new VideoSurfaceView(R.raw.video,this);
         /*setContentView(mVideoView);*/
     }
@@ -53,5 +78,6 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
        // mVideoView.onResume();
     }
+
 
 }

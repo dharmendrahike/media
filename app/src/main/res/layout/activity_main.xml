@@ -5,9 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.dharmendraverma.myapplication.MainActivity">
+    <RelativeLayout
+        android:id="@+id/root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
 
     <android.opengl.GLSurfaceView
         android:id="@+id/glsurfaceview"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+    </RelativeLayout>
 </android.support.constraint.ConstraintLayout>

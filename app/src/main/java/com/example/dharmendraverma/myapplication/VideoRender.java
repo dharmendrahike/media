@@ -4,6 +4,7 @@ package com.example.dharmendraverma.myapplication;
  * Created by dharmendraverma on 22/12/17.
  */
 
+import android.opengl.GLES10;
 import android.opengl.GLES20;
 import android.util.Log;
 
@@ -42,7 +43,22 @@ public class VideoRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFra
                 1.0f, 1.0f, 0, 1.f, 1.f,
         };
 
+    static final float CUBE[] = {
+            -1.0f, -1.0f,
+            1.0f, -1.0f,
+            -1.0f, 1.0f,
+            1.0f, 1.0f,};
+
+
+    static final float TEXTURE[] = {
+            0.0f, 0.0f,
+            1.0f, 0.0f,
+            0.0f, 1.0f,
+            1.0f, 1.0f,};
+
         private FloatBuffer mTriangleVertices;
+    private FloatBuffer mGLCubeBuffer;
+    private FloatBuffer mGLTextureBuffer;
 
         private final String mVertexShader =
                 "uniform mat4 uMVPMatrix;\n" +
@@ -81,14 +97,25 @@ public class VideoRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFra
         private static int GL_TEXTURE_EXTERNAL_OES = 0x8D65;
 
         Context mContext;
+        VideoFilter mVideoFilter;
         int Res;
-        public VideoRender(int res,Context context) {
+        public VideoRender(int res,VideoFilter videoFilter,Context context) {
             mContext = context;
+            mVideoFilter = videoFilter;
             Res =res;
-            mTriangleVertices = ByteBuffer.allocateDirect(
+            mGLCubeBuffer = ByteBuffer.allocateDirect(CUBE.length * 4)
+                    .order(ByteOrder.nativeOrder())
+                    .asFloatBuffer();
+            mGLCubeBuffer.put(CUBE).position(0);
+
+            mGLTextureBuffer = ByteBuffer.allocateDirect(TEXTURE.length * 4)
+                    .order(ByteOrder.nativeOrder())
+                    .asFloatBuffer();
+            mGLCubeBuffer.put(TEXTURE).position(0);
+      /*      mTriangleVertices = ByteBuffer.allocateDirect(
                     mTriangleVerticesData.length * FLOAT_SIZE_BYTES)
                     .order(ByteOrder.nativeOrder()).asFloatBuffer();
-            mTriangleVertices.put(mTriangleVerticesData).position(0);
+            mTriangleVertices.put(mTriangleVerticesData).position(0);*/
 
             Matrix.setIdentityM(mSTMatrix, 0);
         }
@@ -110,10 +137,11 @@ public class VideoRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFra
             GLES20.glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
             GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
 
-            GLES20.glUseProgram(mProgram);
-            checkGlError("glUseProgram");
+           /* GLES20.glUseProgram(mProgram);
+            checkGlError("glUseProgram");*/
 
-            GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+
+            /*GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
             GLES20.glBindTexture(GL_TEXTURE_EXTERNAL_OES, mTextureID);
 
             mTriangleVertices.position(TRIANGLE_VERTICES_DATA_POS_OFFSET);
@@ -134,8 +162,9 @@ public class VideoRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFra
             GLES20.glUniformMatrix4fv(muMVPMatrixHandle, 1, false, mMVPMatrix, 0);
             GLES20.glUniformMatrix4fv(muSTMatrixHandle, 1, false, mSTMatrix, 0);
 
-            GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
-            checkGlError("glDrawArrays");
+            GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);*/
+            mVideoFilter.onDraw(mTextureID, mGLCubeBuffer, mGLTextureBuffer);
+//            checkGlError("glDrawArrays");
             GLES20.glFinish();
 
         }
@@ -147,8 +176,8 @@ public class VideoRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFra
 
         @Override
         public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
-            mProgram = createProgram(mVertexShader, mFragmentShader);
-            if (mProgram == 0) {
+       /*     mProgram = createProgram(mVertexShader, mFragmentShader);*/
+      /*      if (mProgram == 0) {
                 return;
             }
             maPositionHandle = GLES20.glGetAttribLocation(mProgram, "aPosition");
@@ -172,7 +201,7 @@ public class VideoRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFra
             checkGlError("glGetUniformLocation uSTMatrix");
             if (muSTMatrixHandle == -1) {
                 throw new RuntimeException("Could not get attrib location for uSTMatrix");
-            }
+            }*/
 
 
             int[] textures = new int[1];
