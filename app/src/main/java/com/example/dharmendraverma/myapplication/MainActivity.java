@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
        // mMediaPlayer.prepareAsync();
         mVideoFilter = new VideoFilter(1280,720);
         mVideoFilter.setContext(this);
-        mVideoFilter.init();
         mRenderer = new VideoRender(R.raw.video,mVideoFilter,this);
         mGLSurfaceView = (GLSurfaceView)findViewById(R.id.glsurfaceview);
         mGLSurfaceView.setEGLContextClientVersion(2);

@@ -41,7 +41,7 @@ import static javax.microedition.khronos.opengles.GL10.GL_UNSIGNED_BYTE;
  * Created by Neo on 28/11/17.
  */
 
-public class VideoFilter extends FilterOES {
+public class VideoFilter {
 
     private GPUImageCarouselGroup mFilter;
     int mSurfaceWidth;
@@ -50,8 +50,8 @@ public class VideoFilter extends FilterOES {
 
     public VideoFilter(int surfaceWidth,int surfaceHeight)
     {
-        mRenderType = FilterOES.RENDER_TYPE_EDITOR;
-        mFilterType = FILTER_TYPE_EDITOR;
+        /*mRenderType = FilterOES.RENDER_TYPE_EDITOR;
+        mFilterType = FILTER_TYPE_EDITOR;*/
         mSurfaceWidth = surfaceWidth;
         mSurfaceHeight = surfaceHeight;
     }
@@ -59,7 +59,6 @@ public class VideoFilter extends FilterOES {
     public void init() {
         mFilter = getFilter(mContext);
         mFilter.init();
-
         mFilter.onOutputSizeChanged(mSurfaceWidth,mSurfaceHeight);
     }
 
@@ -103,7 +102,7 @@ public class VideoFilter extends FilterOES {
         filterList.add(2, new GPUImageGrayscaleFilter());*/
         filterList.add(new GPUBeautificationFilter(context));
         filterList.add(new IFBrannanFilterOptimized(context));
-        filterList.add(new IFFadeOut(context));
+      //  filterList.add(new IFFadeOut(context));
         //filterList.add(new IFInkwellFilter(HikeMessengerApp.getInstance().getApplicationContext()));
         //filterList.add(new IFLomoFilter(HikeMessengerApp.getInstance().getApplicationContext()));
         //filterList.add(new IFLordKelvinFilter(HikeMessengerApp.getInstance().getApplicationContext()));
@@ -126,9 +125,12 @@ public class VideoFilter extends FilterOES {
 
     public void onDraw(int textureId, FloatBuffer cubeBuffer, FloatBuffer textureBuffer)
     {
-        runPendingOnDrawTasks();
+        /*runPendingOnDrawTasks();*/
         mFilter.onDraw(textureId,cubeBuffer,textureBuffer);
-        runPendingOnDrawTasksEnd();
+       /* runPendingOnDrawTasksEnd();*/
+    }
+
+    public void setMatrix(float[] st){
     }
 
 

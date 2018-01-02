@@ -127,6 +127,7 @@ public class IFBrannanFilterOptimized extends GPUImageFilter {
             "precision mediump float;\n" +
             "uniform lowp samplerExternalOES inputImageTexture;\n" +
             " uniform sampler2D inputImageTexture2;\n " +
+            " varying highp vec2 textureCoordinate;\n" +
 
             " uniform highp float touchPos;\n" +
             " \n" +

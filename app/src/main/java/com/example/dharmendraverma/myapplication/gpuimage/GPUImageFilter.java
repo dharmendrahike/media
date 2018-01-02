@@ -19,6 +19,7 @@ package com.example.dharmendraverma.myapplication.gpuimage;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.PointF;
+import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 
 import java.io.InputStream;
@@ -46,7 +47,7 @@ public class GPUImageFilter{
             "#extension GL_OES_EGL_image_external : require\n" +
             "precision mediump float;\n" +
             "uniform lowp samplerExternalOES inputImageTexture;\n" +
-
+            "varying vec2 textureCoordinate;\n" +
             " \n" +
             "void main()\n" +
             "{\n" +
@@ -152,7 +153,7 @@ public class GPUImageFilter{
         mGLProgId = OpenGlUtils.loadProgram(mVertexShader, mFragmentShader);
 
         mGLAttribPosition = GLES20.glGetAttribLocation(mGLProgId, "position");
-        mGLUniformTexture = GLES20.glGetUniformLocation(mGLProgId, "inputImageTexture");
+        //mGLUniformTexture = GLES20.glGetUniformLocation(mGLProgId, "inputImageTexture");
         mGLAttribTextureCoordinate = GLES20.glGetAttribLocation(mGLProgId,
                 "inputTextureCoordinate");
         mTouchPosHandle = GLES20.glGetUniformLocation(getProgram(), "touchPos");
@@ -247,8 +248,8 @@ public class GPUImageFilter{
         GLES20.glUniform1f(mEnabledDrawSideHandle, drawSide);
 
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-        GLES20.glBindTexture(GL_TEXTURE_EXTERNAL_OES, textureId);
-        GLES20.glUniform1i(mGLUniformTexture, 0);
+        GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, textureId);
+       /* GLES20.glUniform1i(mGLUniformTexture, 0);*/
 
 
         GLES20.glEnableVertexAttribArray(mGLAttribPosition);

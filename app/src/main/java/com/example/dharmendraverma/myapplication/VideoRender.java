@@ -67,8 +67,8 @@ public class VideoRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFra
                         "attribute vec4 aTextureCoord;\n" +
                         "varying vec2 vTextureCoord;\n" +
                         "void main() {\n" +
-                        "  gl_Position = uMVPMatrix * aPosition;\n" +
-                        "  vTextureCoord = (uSTMatrix * aTextureCoord).xy;\n" +
+                        "  gl_Position = aPosition;\n" +
+                        "  vTextureCoord = (aTextureCoord).xy;\n" +
                         "}\n";
 
         private final String mFragmentShader =
@@ -112,10 +112,10 @@ public class VideoRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFra
                     .order(ByteOrder.nativeOrder())
                     .asFloatBuffer();
             mGLCubeBuffer.put(TEXTURE).position(0);
-      /*      mTriangleVertices = ByteBuffer.allocateDirect(
+           mTriangleVertices = ByteBuffer.allocateDirect(
                     mTriangleVerticesData.length * FLOAT_SIZE_BYTES)
                     .order(ByteOrder.nativeOrder()).asFloatBuffer();
-            mTriangleVertices.put(mTriangleVerticesData).position(0);*/
+            mTriangleVertices.put(mTriangleVerticesData).position(0);
 
             Matrix.setIdentityM(mSTMatrix, 0);
         }
@@ -137,11 +137,11 @@ public class VideoRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFra
             GLES20.glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
             GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
 
-           /* GLES20.glUseProgram(mProgram);
-            checkGlError("glUseProgram");*/
+            /*GLES20.glUseProgram(mProgram);
+            checkGlError("glUseProgram");
 
 
-            /*GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+            GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
             GLES20.glBindTexture(GL_TEXTURE_EXTERNAL_OES, mTextureID);
 
             mTriangleVertices.position(TRIANGLE_VERTICES_DATA_POS_OFFSET);
@@ -158,11 +158,12 @@ public class VideoRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFra
             GLES20.glEnableVertexAttribArray(maTextureHandle);
             checkGlError("glEnableVertexAttribArray maTextureHandle");
 
-            Matrix.setIdentityM(mMVPMatrix, 0);
-            GLES20.glUniformMatrix4fv(muMVPMatrixHandle, 1, false, mMVPMatrix, 0);
-            GLES20.glUniformMatrix4fv(muSTMatrixHandle, 1, false, mSTMatrix, 0);
+            *//*Matrix.setIdentityM(mMVPMatrix, 0);
+            GLES20.glUniformMatrix4fv(muMVPMatrixHandle, 1, false, mMVPMatrix, 0);*//*
+         //   GLES20.glUniformMatrix4fv(muSTMatrixHandle, 1, false, mSTMatrix, 0);
 
             GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);*/
+            mVideoFilter.setMatrix(mSTMatrix);
             mVideoFilter.onDraw(mTextureID, mGLCubeBuffer, mGLTextureBuffer);
 //            checkGlError("glDrawArrays");
             GLES20.glFinish();
@@ -176,8 +177,9 @@ public class VideoRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFra
 
         @Override
         public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
-       /*     mProgram = createProgram(mVertexShader, mFragmentShader);*/
-      /*      if (mProgram == 0) {
+            mVideoFilter.init();
+            /*mProgram = createProgram(mVertexShader, mFragmentShader);
+            if (mProgram == 0) {
                 return;
             }
             maPositionHandle = GLES20.glGetAttribLocation(mProgram, "aPosition");
@@ -189,15 +191,15 @@ public class VideoRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFra
             checkGlError("glGetAttribLocation aTextureCoord");
             if (maTextureHandle == -1) {
                 throw new RuntimeException("Could not get attrib location for aTextureCoord");
-            }
+            }*/
 
-            muMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");
+          /*  muMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");
             checkGlError("glGetUniformLocation uMVPMatrix");
             if (muMVPMatrixHandle == -1) {
                 throw new RuntimeException("Could not get attrib location for uMVPMatrix");
-            }
+            }*/
 
-            muSTMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uSTMatrix");
+          /*  muSTMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uSTMatrix");
             checkGlError("glGetUniformLocation uSTMatrix");
             if (muSTMatrixHandle == -1) {
                 throw new RuntimeException("Could not get attrib location for uSTMatrix");
